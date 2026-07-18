@@ -61,14 +61,6 @@ export function Quotes() {
   // 1 = forward, -1 = backward — drives the slide direction of the animation.
   const [dir, setDir] = useState(1);
 
-  const go = useCallback(
-    (next: number) => {
-      setDir(next > index || (index === MEMORIES.length - 1 && next === 0) ? 1 : -1);
-      setIndex((next + MEMORIES.length) % MEMORIES.length);
-    },
-    [index],
-  );
-
   const nextSlide = useCallback(() => {
     setDir(1);
     setIndex((i) => (i + 1) % MEMORIES.length);
@@ -178,21 +170,17 @@ export function Quotes() {
           </div>
         </div>
 
-        {/* Progress dots */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-          {MEMORIES.map((m, i) => (
-            <button
-              key={m.id}
-              onClick={() => go(i)}
-              aria-label={`Go to memory ${i + 1}`}
-              aria-current={i === index}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === index
-                  ? "w-6 bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)]"
-                  : "w-2 bg-plum/20 hover:bg-rose/50"
-              }`}
+        {/* Counter + progress bar */}
+        <div className="mx-auto mt-6 flex max-w-xs items-center gap-3">
+          <span className="font-dancing text-2xl text-plum">{pad(index + 1)}</span>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-plum/15">
+            <motion.div
+              className="h-full rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)]"
+              animate={{ width: `${((index + 1) / MEMORIES.length) * 100}%` }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             />
-          ))}
+          </div>
+          <span className="font-dancing text-2xl text-rose-gold-deep">{pad(MEMORIES.length)}</span>
         </div>
 
         <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-xs text-ink-soft">
