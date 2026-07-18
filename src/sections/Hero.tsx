@@ -208,14 +208,14 @@ function Buttons({ className }: { className?: string }) {
       <button
         onClick={() => scrollToId("story")}
         aria-label="Explore our love story"
-        className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#b81f4f] shadow-[0_14px_30px_-10px_rgba(90,10,40,0.6)] transition hover:scale-[1.04] active:scale-95"
+        className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#b81f4f] shadow-[0_14px_30px_-10px_rgba(90,10,40,0.6)] transition hover:scale-[1.04] active:scale-95 sm:px-7"
       >
         <Heart size={16} fill="currentColor" /> Explore Our Love
       </button>
       <button
         onClick={() => scrollToId("memories")}
         aria-label="See our memories"
-        className="inline-flex items-center gap-2 rounded-full border border-white/70 px-7 py-3 text-sm font-semibold text-white transition hover:bg-white/10 active:scale-95"
+        className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/70 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 active:scale-95 sm:px-7"
       >
         <Images size={16} /> Our Memories
       </button>
@@ -284,7 +284,7 @@ export function Hero() {
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="relative flex min-h-[100svh] flex-col pb-8 lg:hidden">
+      <div className="relative flex min-h-[100svh] flex-col overflow-hidden pb-8 lg:hidden">
         {/* Decorative motifs */}
         <StripeHeart className="pointer-events-none absolute right-4 top-16 w-28 text-white/25" />
         <StripeHeart className="pointer-events-none absolute right-10 top-52 w-24 text-white/15" />
@@ -293,11 +293,11 @@ export function Hero() {
         </motion.div>
 
         {/* Text content (top) */}
-        <div className="relative z-10 px-7 pt-20">
+        <div className="relative z-10 w-full max-w-full px-5 pt-20">
           <Eyebrow />
-          <ScriptTitle className="mt-2 text-6xl" />
+          <ScriptTitle className="mt-2 text-[min(10vw,3.25rem)] leading-[1.1]" />
           <Names className="mt-3 text-2xl" />
-          <Tagline className="mt-4 max-w-sm text-lg" />
+          <Tagline className="mt-4 max-w-[17rem] text-base" />
           <Buttons className="mt-7" />
         </div>
 
