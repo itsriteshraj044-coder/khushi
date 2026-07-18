@@ -14,9 +14,15 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const AUTOPLAY_MS = 4500;
 
-/** Path to a photo in /public/image. */
-const img = (n: number) => `/image/love-${String(n).padStart(2, "0")}.jpg`;
+const pad = (n: number) => String(n).padStart(2, "0");
 
+/** Every photo in /public/image (love-01..15 + the WhatsApp set copied to wa-*). */
+const PHOTOS = [
+  ...Array.from({ length: 15 }, (_, i) => `/image/love-${pad(i + 1)}.jpg`),
+  ...Array.from({ length: 15 }, (_, i) => `/image/wa-${pad(i + 1)}.jpg`),
+];
+
+/** A rotating pool of captions assigned to the photos. */
 const CAPTIONS = [
   "Golden Hour",
   "Hand in Hand",
@@ -36,10 +42,10 @@ const CAPTIONS = [
 ];
 
 /** Our memories — real couple photos, shown one at a time in the spotlight box. */
-const MEMORIES = CAPTIONS.map((caption, i) => ({
+const MEMORIES = PHOTOS.map((src, i) => ({
   id: `mem-${i + 1}`,
-  src: img(i + 1),
-  caption,
+  src,
+  caption: CAPTIONS[i % CAPTIONS.length],
 }));
 
 /**
