@@ -14,7 +14,6 @@ const VideoShowcase = lazy(() => import("@/sections/VideoShowcase").then((m) => 
 const LoveStory = lazy(() => import("@/sections/LoveStory").then((m) => ({ default: m.LoveStory })));
 const Quotes = lazy(() => import("@/sections/Quotes").then((m) => ({ default: m.Quotes })));
 const Shayari = lazy(() => import("@/sections/Shayari").then((m) => ({ default: m.Shayari })));
-const Memories = lazy(() => import("@/sections/Memories").then((m) => ({ default: m.Memories })));
 const WhyILoveYou = lazy(() => import("@/sections/WhyILoveYou").then((m) => ({ default: m.WhyILoveYou })));
 const Love3D = lazy(() => import("@/sections/Love3D").then((m) => ({ default: m.Love3D })));
 const LoveLetter = lazy(() => import("@/sections/LoveLetter").then((m) => ({ default: m.LoveLetter })));
@@ -51,7 +50,6 @@ function App() {
           <VideoShowcase />
           <Quotes />
           <Shayari />
-          <Memories />
           <WhyILoveYou />
           <Love3D />
           <LoveLetter />

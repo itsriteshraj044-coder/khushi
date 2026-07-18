@@ -213,7 +213,7 @@ function Buttons({ className }: { className?: string }) {
         <Heart size={16} fill="currentColor" /> Explore Our Love
       </button>
       <button
-        onClick={() => scrollToId("memories")}
+        onClick={() => scrollToId("quotes")}
         aria-label="See our memories"
         className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-white/70 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10 active:scale-95 sm:px-7"
       >

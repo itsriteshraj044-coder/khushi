@@ -10,9 +10,8 @@ export const COUPLE = {
 export const SECTIONS = [
   { id: "hero", label: "Home" },
   { id: "story", label: "Our Story" },
-  { id: "quotes", label: "Quotes" },
+  { id: "quotes", label: "Memories" },
   { id: "shayari", label: "Shayari" },
-  { id: "memories", label: "Memories" },
   { id: "reasons", label: "Why You" },
   { id: "love3d", label: "3D Love" },
   { id: "letter", label: "Letter" },
