@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Music, X, Play, Pause } from "lucide-react";
+import { Music, X, Play, Pause, SkipBack, SkipForward } from "lucide-react";
 
 /**
- * Our songs. Played *audio-only* through YouTube's official IFrame player — the
- * video is rendered at zero size so only the sound comes through. This is the
- * licence-friendly way to play them; we deliberately do NOT rip the audio to MP3
- * (that would breach copyright and YouTube's terms).
+ * Our songs. Played *audio-only* through YouTube's official IFrame player (the
+ * video is rendered at zero size) with our own transport controls. Licence-
+ * friendly — we deliberately do NOT rip the audio to MP3.
  */
 const SONGS = [
+  { id: "CBbHgI1C6ts", title: "Kabhi Toh Paas Mere Aao", artist: "Korean Version" },
+  { id: "zNUs54J3mKo", title: "Tera Chehra", artist: "Adnan Sami" },
   { id: "petoy_uTMRU", title: "Rahega Hothon Pe", artist: "Kunaal Vermaa" },
   { id: "ETv-U0ytbDA", title: "Yun Hi Re", artist: "Anirudh · David" },
-  { id: "Hxe362w66GI", title: "Jahaan Tum Ho", artist: "Shrey Singhal" },
-  { id: "zNUs54J3mKo", title: "Tera Chehra", artist: "Adnan Sami" },
 ];
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -23,6 +22,13 @@ declare global {
   }
 }
 
+const fmt = (s: number) => {
+  if (!Number.isFinite(s) || s < 0) s = 0;
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+};
+
 /** Five equalizer bars that animate only while a song is playing. */
 function Equalizer({ active, color = "bg-rose" }: { active: boolean; color?: string }) {
   return (
@@ -31,11 +37,7 @@ function Equalizer({ active, color = "bg-rose" }: { active: boolean; color?: str
         <motion.span
           key={i}
           className={`w-[3px] rounded-full ${color}`}
-          animate={
-            active
-              ? { height: ["30%", "100%", "45%", "80%", "30%"] }
-              : { height: "30%" }
-          }
+          animate={active ? { height: ["30%", "100%", "45%", "80%", "30%"] } : { height: "30%" }}
           transition={
             active
               ? { duration: 0.9 + i * 0.15, repeat: Infinity, ease: "easeInOut" }
@@ -49,17 +51,24 @@ function Equalizer({ active, color = "bg-rose" }: { active: boolean; color?: str
 }
 
 /**
- * A floating "Our Song" button that opens a popup playlist. Picking a song plays
- * it as audio (the YouTube video is hidden); the popup has play/pause + close.
+ * A floating "Our Song" button that opens a popup playlist with a full audio
+ * controller (seek bar, previous / play-pause / next) and a close button.
  */
 export function MusicPlayer() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState({ current: 0, duration: 0 });
 
   const playerRef = useRef<any>(null);
   const hostRef = useRef<HTMLDivElement>(null);
+  const currentRef = useRef<number | null>(null);
+  const nextRef = useRef<() => void>(() => {});
   const [apiReady, setApiReady] = useState(false);
+
+  useEffect(() => {
+    currentRef.current = current;
+  }, [current]);
 
   // Load the YouTube IFrame API once.
   useEffect(() => {
@@ -90,21 +99,45 @@ export function MusicPlayer() {
       events: {
         onStateChange: (e: any) => {
           setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
+          if (e.data === window.YT.PlayerState.ENDED) nextRef.current();
         },
       },
     });
   }, [apiReady]);
 
-  const playSong = (i: number) => {
-    setCurrent(i);
-    playerRef.current?.loadVideoById(SONGS[i].id);
+  // Poll playback position while a song is loaded.
+  useEffect(() => {
+    if (current === null) return;
+    const id = setInterval(() => {
+      const p = playerRef.current;
+      if (p?.getDuration) {
+        setProgress({ current: p.getCurrentTime() || 0, duration: p.getDuration() || 0 });
+      }
+    }, 400);
+    return () => clearInterval(id);
+  }, [current]);
+
+  const playIndex = (i: number) => {
+    const idx = (i + SONGS.length) % SONGS.length;
+    setCurrent(idx);
+    setProgress({ current: 0, duration: 0 });
+    playerRef.current?.loadVideoById(SONGS[idx].id);
   };
+
+  const goNext = () => playIndex((currentRef.current ?? -1) + 1);
+  const goPrev = () => playIndex((currentRef.current ?? 1) - 1);
+  nextRef.current = goNext;
 
   const togglePlay = () => {
     const p = playerRef.current;
     if (!p) return;
     if (isPlaying) p.pauseVideo();
     else p.playVideo();
+  };
+
+  const seek = (t: number) => {
+    playerRef.current?.seekTo(t, true);
+    setProgress((prev) => ({ ...prev, current: t }));
   };
 
   const active = current !== null ? SONGS[current] : null;
@@ -180,22 +213,66 @@ export function MusicPlayer() {
                 The tunes that feel like us — tap one to play.
               </p>
 
-              {/* Now playing bar */}
+              {/* Now playing + controller */}
               {active && (
-                <div className="mt-5 flex items-center gap-3 rounded-2xl bg-white/60 p-3 shadow-inner">
-                  <button
-                    type="button"
-                    onClick={togglePlay}
-                    aria-label={isPlaying ? "Pause" : "Play"}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow-md transition hover:scale-105 active:scale-95"
-                  >
-                    {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
-                  </button>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-plum">{active.title}</p>
-                    <p className="truncate text-xs text-ink-soft">{active.artist}</p>
+                <div className="mt-5 rounded-2xl bg-white/60 p-4 shadow-inner">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow">
+                      <Equalizer active={isPlaying} color="bg-white" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-plum">{active.title}</p>
+                      <p className="truncate text-xs text-ink-soft">{active.artist}</p>
+                    </div>
                   </div>
-                  <Equalizer active={isPlaying} />
+
+                  {/* Seek bar */}
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="w-9 text-right text-[11px] tabular-nums text-ink-soft">
+                      {fmt(progress.current)}
+                    </span>
+                    <input
+                      type="range"
+                      min={0}
+                      max={progress.duration || 0}
+                      value={progress.current}
+                      step={1}
+                      onChange={(e) => seek(Number(e.target.value))}
+                      aria-label="Seek"
+                      className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-plum/20 accent-rose"
+                    />
+                    <span className="w-9 text-[11px] tabular-nums text-ink-soft">
+                      {fmt(progress.duration)}
+                    </span>
+                  </div>
+
+                  {/* Transport controls */}
+                  <div className="mt-3 flex items-center justify-center gap-5">
+                    <button
+                      type="button"
+                      onClick={goPrev}
+                      aria-label="Previous song"
+                      className="flex h-10 w-10 items-center justify-center rounded-full glass text-plum transition hover:text-rose active:scale-90"
+                    >
+                      <SkipBack size={18} fill="currentColor" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={togglePlay}
+                      aria-label={isPlaying ? "Pause" : "Play"}
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow-md transition hover:scale-105 active:scale-95"
+                    >
+                      {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={goNext}
+                      aria-label="Next song"
+                      className="flex h-10 w-10 items-center justify-center rounded-full glass text-plum transition hover:text-rose active:scale-90"
+                    >
+                      <SkipForward size={18} fill="currentColor" />
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -207,7 +284,7 @@ export function MusicPlayer() {
                     <li key={s.id}>
                       <button
                         type="button"
-                        onClick={() => playSong(i)}
+                        onClick={() => playIndex(i)}
                         className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition ${
                           isCurrent ? "bg-rose/15 ring-1 ring-rose/40" : "hover:bg-white/70"
                         }`}
