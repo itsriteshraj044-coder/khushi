@@ -1,23 +1,8 @@
 import { motion } from "motion/react";
 import { Heart, ArrowUp } from "lucide-react";
-import {
-  FaInstagram,
-  FaXTwitter,
-  FaFacebookF,
-  FaPinterestP,
-  FaSpotify,
-} from "react-icons/fa6";
 import { scrollToId } from "@/hooks/useLenis";
 import { FloatingHearts } from "@/components/FloatingHearts";
 import { COUPLE } from "@/utils/constants";
-
-const SOCIALS = [
-  { icon: FaInstagram, label: "Instagram", href: "#" },
-  { icon: FaXTwitter, label: "X", href: "#" },
-  { icon: FaFacebookF, label: "Facebook", href: "#" },
-  { icon: FaPinterestP, label: "Pinterest", href: "#" },
-  { icon: FaSpotify, label: "Spotify", href: "#" },
-];
 
 export function Footer() {
   return (
@@ -38,21 +23,6 @@ export function Footer() {
           Thank you for wandering through our little universe of love. May your
           own story be every bit as tender, and twice as long.
         </p>
-
-        {/* Socials */}
-        <div className="mt-8 flex items-center justify-center gap-3">
-          {SOCIALS.map(({ icon: Icon, label, href }) => (
-            <motion.a
-              key={label}
-              href={href}
-              aria-label={label}
-              whileHover={{ y: -4, scale: 1.1 }}
-              className="flex h-11 w-11 items-center justify-center rounded-full glass text-plum transition-colors hover:text-rose"
-            >
-              <Icon size={18} />
-            </motion.a>
-          ))}
-        </div>
 
         {/* Back to top */}
         <button
