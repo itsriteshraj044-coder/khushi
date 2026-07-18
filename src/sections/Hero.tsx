@@ -284,7 +284,7 @@ export function Hero() {
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="relative flex min-h-[100svh] flex-col lg:hidden">
+      <div className="relative flex min-h-[100svh] flex-col pb-8 lg:hidden">
         {/* Decorative motifs */}
         <StripeHeart className="pointer-events-none absolute right-4 top-16 w-28 text-white/25" />
         <StripeHeart className="pointer-events-none absolute right-10 top-52 w-24 text-white/15" />
@@ -302,12 +302,14 @@ export function Hero() {
         </div>
 
         {/* Couple photo framed inside a heart (bottom) with a heart balloon
-            overlapping its right edge — mirroring the reference mobile panel. */}
-        <div className="relative mt-6 flex-1">
-          <PhotoBlob className="absolute -bottom-3 left-1/2 aspect-[100/106] w-[76%] -translate-x-1/2 drop-shadow-[0_24px_50px_-24px_rgba(90,10,40,0.65)]" />
+            overlapping its right edge — mirroring the reference mobile panel.
+            The heart is a normal flow item (not absolute) so it never overlaps
+            the text and the section grows to fit it on short screens. */}
+        <div className="relative mt-8 flex flex-1 items-end justify-center pt-4">
+          <PhotoBlob className="aspect-[100/106] w-[76%] shrink-0 drop-shadow-[0_24px_50px_-24px_rgba(90,10,40,0.65)]" />
           <motion.div
             animate={float(-16, 7)}
-            className="pointer-events-none absolute bottom-[22%] right-3 z-10 w-16"
+            className="pointer-events-none absolute bottom-[20%] right-3 z-10 w-16"
           >
             <HeartBalloon className="w-full" />
           </motion.div>
