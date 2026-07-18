@@ -17,7 +17,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 // Position of the circular button over each clip's fixed bottom-right watermark.
 // Tweak the insets per video if the sparkle peeks out on any side.
 const BADGE_POS = {
-  mobile: "bottom-[3%] right-[3%]",
+  mobile: "bottom-[6%] right-[7%]",
   desktop: "bottom-[4%] right-[3%]",
 } as const;
 
