@@ -14,11 +14,11 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
  * watermark and lets the visitor unmute / mute the sound.
  */
 
-// Position of the circular button over each clip's watermark. Tweak per video
-// if the watermark sits in a different corner.
+// Position of the circular button over each clip's fixed bottom-right watermark.
+// Tweak the insets per video if the sparkle peeks out on any side.
 const BADGE_POS = {
-  mobile: "bottom-3 right-3",
-  desktop: "bottom-3 right-3",
+  mobile: "bottom-[3%] right-[3%]",
+  desktop: "bottom-[4%] right-[3%]",
 } as const;
 
 export function VideoShowcase() {
@@ -59,14 +59,15 @@ export function VideoShowcase() {
             preload="metadata"
           />
 
-          {/* Circular music button over the watermark (also mute/unmute) */}
+          {/* Circular music button over the watermark (also mute/unmute).
+              Opaque fill + blur so the translucent sparkle behind is fully hidden. */}
           <button
             type="button"
             onClick={toggleMute}
             aria-label={muted ? "Unmute video" : "Mute video"}
-            className={`absolute ${badgePos} z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/55 text-white shadow-lg ring-1 ring-white/30 backdrop-blur-sm transition hover:bg-black/70 active:scale-90`}
+            className={`absolute ${badgePos} z-10 flex h-14 w-14 items-center justify-center rounded-full bg-[#3a1228] text-white shadow-lg ring-1 ring-white/40 backdrop-blur-md transition hover:bg-[#521a39] active:scale-90`}
           >
-            {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            {muted ? <VolumeX size={22} /> : <Volume2 size={22} />}
           </button>
         </>
       ) : (
