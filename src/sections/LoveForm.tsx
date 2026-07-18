@@ -5,46 +5,10 @@ import { Send, Heart, Sparkles } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { GlassCard } from "@/components/GlassCard";
 import type { LoveFormData } from "@/types";
+import { FIELDS, EMPTY_FORM as EMPTY, type FieldConfig } from "@/data/formFields";
+import { supabase, SUBMISSIONS_TABLE } from "@/lib/supabase";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
-
-type FieldKind = "text" | "email" | "date" | "textarea" | "select";
-
-interface FieldConfig {
-  name: keyof LoveFormData;
-  label: string;
-  kind: FieldKind;
-  required?: boolean;
-  options?: string[];
-  full?: boolean;
-}
-
-const FIELDS: FieldConfig[] = [
-  { name: "yourName", label: "Your Name", kind: "text", required: true },
-  { name: "partnerName", label: "Partner's Name", kind: "text", required: true },
-  { name: "email", label: "Email", kind: "email", required: true },
-  { name: "specialDate", label: "Your Special Date", kind: "date" },
-  { name: "favoriteSong", label: "Favourite Song", kind: "text" },
-  {
-    name: "relationshipGoal",
-    label: "Relationship Goal",
-    kind: "select",
-    options: ["Grow together", "Travel the world", "Build a home", "Forever & always"],
-  },
-  { name: "favoriteMemory", label: "Favourite Memory", kind: "textarea", full: true },
-  { name: "loveMessage", label: "Your Love Message", kind: "textarea", required: true, full: true },
-];
-
-const EMPTY: LoveFormData = {
-  yourName: "",
-  partnerName: "",
-  email: "",
-  specialDate: "",
-  favoriteMemory: "",
-  loveMessage: "",
-  favoriteSong: "",
-  relationshipGoal: "",
-};
 
 /** A glass field with a floating label; supports input, textarea and select. */
 function FloatingField({
@@ -132,6 +96,8 @@ export function LoveForm() {
   const [data, setData] = useState<LoveFormData>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof LoveFormData, string>>>({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const reduced = useReducedMotion();
 
   const heartShape = useMemo(
@@ -174,9 +140,25 @@ export function LoveForm() {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate() || sending) return;
+
+    setSending(true);
+    setSendError(null);
+
+    // Save to Supabase when configured; otherwise still celebrate so the site
+    // works before the backend is wired up.
+    if (supabase) {
+      const { error } = await supabase.from(SUBMISSIONS_TABLE).insert({ data });
+      if (error) {
+        setSending(false);
+        setSendError("Couldn't send right now — please try again in a moment.");
+        return;
+      }
+    }
+
+    setSending(false);
     setSent(true);
     celebrate();
   };
@@ -242,14 +224,18 @@ export function LoveForm() {
                   />
                 ))}
 
-                <div className="sm:col-span-2 flex justify-center pt-2">
+                <div className="flex flex-col items-center gap-3 pt-2 sm:col-span-2">
+                  {sendError && (
+                    <p className="text-sm text-rose">{sendError}</p>
+                  )}
                   <motion.button
                     type="submit"
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.96 }}
-                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(120deg,#f7a8b8,#e8b298,#c9b6f0)] bg-[length:200%_200%] px-8 py-3.5 font-medium text-white shadow-[0_14px_40px_-10px_rgba(217,122,140,0.6)] animate-gradient"
+                    disabled={sending}
+                    whileHover={{ scale: sending ? 1 : 1.04 }}
+                    whileTap={{ scale: sending ? 1 : 0.96 }}
+                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(120deg,#f7a8b8,#e8b298,#c9b6f0)] bg-[length:200%_200%] px-8 py-3.5 font-medium text-white shadow-[0_14px_40px_-10px_rgba(217,122,140,0.6)] animate-gradient disabled:opacity-70"
                   >
-                    <Send size={18} /> Send My Love
+                    <Send size={18} /> {sending ? "Sending…" : "Send My Love"}
                   </motion.button>
                 </div>
               </motion.form>
