@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Music, X, Play } from "lucide-react";
+import { Music, X, Play, Pause } from "lucide-react";
 
 /**
- * Our songs. Played through YouTube's official embedded player (clicking a title
- * loads & autoplays it) — the proper, licence-friendly way rather than ripping
- * the audio to MP3.
+ * Our songs. Played *audio-only* through YouTube's official IFrame player — the
+ * video is rendered at zero size so only the sound comes through. This is the
+ * licence-friendly way to play them; we deliberately do NOT rip the audio to MP3
+ * (that would breach copyright and YouTube's terms).
  */
 const SONGS = [
   { id: "petoy_uTMRU", title: "Rahega Hothon Pe", artist: "Kunaal Vermaa" },
@@ -13,6 +14,14 @@ const SONGS = [
   { id: "Hxe362w66GI", title: "Jahaan Tum Ho", artist: "Shrey Singhal" },
   { id: "zNUs54J3mKo", title: "Tera Chehra", artist: "Adnan Sami" },
 ];
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+declare global {
+  interface Window {
+    YT?: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
 
 /** Five equalizer bars that animate only while a song is playing. */
 function Equalizer({ active, color = "bg-rose" }: { active: boolean; color?: string }) {
@@ -41,17 +50,72 @@ function Equalizer({ active, color = "bg-rose" }: { active: boolean; color?: str
 
 /**
  * A floating "Our Song" button that opens a popup playlist. Picking a song plays
- * it in an embedded YouTube player; the popup has a close button and backdrop.
+ * it as audio (the YouTube video is hidden); the popup has play/pause + close.
  */
 export function MusicPlayer() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const playing = current !== null;
-  const active = playing ? SONGS[current] : null;
+  const playerRef = useRef<any>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const [apiReady, setApiReady] = useState(false);
+
+  // Load the YouTube IFrame API once.
+  useEffect(() => {
+    if (window.YT?.Player) {
+      setApiReady(true);
+      return;
+    }
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      prev?.();
+      setApiReady(true);
+    };
+    if (!document.getElementById("yt-iframe-api")) {
+      const tag = document.createElement("script");
+      tag.id = "yt-iframe-api";
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(tag);
+    }
+  }, []);
+
+  // Create the (hidden) player once the API is ready.
+  useEffect(() => {
+    if (!apiReady || playerRef.current || !hostRef.current) return;
+    playerRef.current = new window.YT.Player(hostRef.current, {
+      height: "0",
+      width: "0",
+      playerVars: { controls: 0, rel: 0, playsinline: 1 },
+      events: {
+        onStateChange: (e: any) => {
+          setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
+        },
+      },
+    });
+  }, [apiReady]);
+
+  const playSong = (i: number) => {
+    setCurrent(i);
+    playerRef.current?.loadVideoById(SONGS[i].id);
+  };
+
+  const togglePlay = () => {
+    const p = playerRef.current;
+    if (!p) return;
+    if (isPlaying) p.pauseVideo();
+    else p.playVideo();
+  };
+
+  const active = current !== null ? SONGS[current] : null;
 
   return (
     <>
+      {/* Hidden audio-only YouTube player (rendered at 0×0, off-screen). */}
+      <div className="pointer-events-none fixed -left-[9999px] top-0 h-0 w-0 overflow-hidden" aria-hidden>
+        <div ref={hostRef} />
+      </div>
+
       {/* Floating launcher */}
       <motion.button
         type="button"
@@ -70,7 +134,7 @@ export function MusicPlayer() {
           <span className="flex items-center gap-1 text-xs font-medium text-plum">
             <Music size={11} /> Our Song
           </span>
-          <Equalizer active={playing} />
+          <Equalizer active={isPlaying} />
         </span>
       </motion.button>
 
@@ -116,17 +180,22 @@ export function MusicPlayer() {
                 The tunes that feel like us — tap one to play.
               </p>
 
-              {/* Now playing */}
+              {/* Now playing bar */}
               {active && (
-                <div className="mt-5 overflow-hidden rounded-2xl border border-white/70 shadow-md">
-                  <iframe
-                    key={active.id}
-                    className="aspect-video w-full"
-                    src={`https://www.youtube.com/embed/${active.id}?autoplay=1&rel=0`}
-                    title={active.title}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowFullScreen
-                  />
+                <div className="mt-5 flex items-center gap-3 rounded-2xl bg-white/60 p-3 shadow-inner">
+                  <button
+                    type="button"
+                    onClick={togglePlay}
+                    aria-label={isPlaying ? "Pause" : "Play"}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow-md transition hover:scale-105 active:scale-95"
+                  >
+                    {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                  </button>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-plum">{active.title}</p>
+                    <p className="truncate text-xs text-ink-soft">{active.artist}</p>
+                  </div>
+                  <Equalizer active={isPlaying} />
                 </div>
               )}
 
@@ -138,13 +207,17 @@ export function MusicPlayer() {
                     <li key={s.id}>
                       <button
                         type="button"
-                        onClick={() => setCurrent(i)}
+                        onClick={() => playSong(i)}
                         className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left transition ${
                           isCurrent ? "bg-rose/15 ring-1 ring-rose/40" : "hover:bg-white/70"
                         }`}
                       >
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow">
-                          {isCurrent ? <Equalizer active color="bg-white" /> : <Play size={14} fill="currentColor" />}
+                          {isCurrent && isPlaying ? (
+                            <Equalizer active color="bg-white" />
+                          ) : (
+                            <Play size={14} fill="currentColor" />
+                          )}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block truncate font-medium text-plum">{s.title}</span>
