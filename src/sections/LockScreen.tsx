@@ -21,6 +21,9 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (id.trim().toLowerCase() === LOCK_ID && pass === LOCK_PASS) {
+      // Warm up the music player inside this tap so iOS will let our song
+      // auto-play (unmuted) later, when the letter's Explore CTA is tapped.
+      window.dispatchEvent(new Event("prime-our-song"));
       onUnlock();
     } else {
       setError(true);

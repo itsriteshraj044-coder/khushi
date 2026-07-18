@@ -98,7 +98,10 @@ export function MusicPlayer() {
     playerRef.current = new window.YT.Player(hostRef.current, {
       height: "0",
       width: "0",
-      playerVars: { controls: 0, rel: 0, playsinline: 1 },
+      // Pre-cue the first song so it can be started with a synchronous
+      // playVideo() inside a tap — which is what iOS Safari/Chrome require.
+      videoId: SONGS[0].id,
+      playerVars: { autoplay: 0, controls: 0, rel: 0, playsinline: 1 },
       events: {
         onReady: () => {
           if (pendingFirstRef.current) {
@@ -125,6 +128,27 @@ export function MusicPlayer() {
     return () => window.removeEventListener("play-our-song", handler);
   }, []);
 
+  // iOS unlock: warm up the (muted) player inside the earlier Unlock tap so a
+  // later programmatic play is allowed. Silent 0×0 blip, then paused at 0.
+  useEffect(() => {
+    const handler = () => {
+      const p = playerRef.current;
+      if (!p?.playVideo) return;
+      try {
+        p.mute();
+        p.playVideo();
+        window.setTimeout(() => {
+          p.pauseVideo?.();
+          p.seekTo?.(0, true);
+        }, 60);
+      } catch {
+        /* ignore */
+      }
+    };
+    window.addEventListener("prime-our-song", handler);
+    return () => window.removeEventListener("prime-our-song", handler);
+  }, []);
+
   // Poll playback position while a song is loaded.
   useEffect(() => {
     if (current === null) return;
@@ -148,11 +172,19 @@ export function MusicPlayer() {
   const goPrev = () => playIndex((currentRef.current ?? 1) - 1);
   nextRef.current = goNext;
 
-  // Start our first song, unmuted (used by the "Explore" tap).
+  // Start our first song, unmuted (used by the "Explore" tap). The song is
+  // already cued in the constructor, so we call playVideo() synchronously —
+  // iOS blocks the async loadVideoById() path, but allows this one.
   const playFirst = () => {
-    playerRef.current?.unMute?.();
+    const p = playerRef.current;
+    if (!p) return;
+    setCurrent(0);
+    currentRef.current = 0;
+    setProgress({ current: 0, duration: 0 });
+    p.unMute?.();
     setMuted(false);
-    playIndex(0);
+    p.seekTo?.(0, true);
+    p.playVideo?.();
   };
   playFirstRef.current = playFirst;
 
