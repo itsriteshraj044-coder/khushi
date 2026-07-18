@@ -1,13 +1,19 @@
 import { useMemo } from "react";
 import { Heart } from "lucide-react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 /**
  * The site-wide dreamy backdrop: an animated gradient mesh, drifting colour
  * blobs, soft bokeh, and slow floating hearts. Fixed behind all content.
+ *
+ * On phones this collapses to a *static* gradient with a couple of soft (but
+ * un-animated) blobs — animating large blurred layers is the main cause of the
+ * lag and flicker on mobile GPUs, so we simply don't.
  */
 export function AnimatedBackground() {
   const reduced = useReducedMotion();
+  const mobile = useIsMobile();
 
   const hearts = useMemo(
     () =>
@@ -33,6 +39,20 @@ export function AnimatedBackground() {
       })),
     [],
   );
+
+  // Phones: a static gradient + a couple of un-animated blobs. Animating large
+  // blurred layers is the main cause of mobile lag/flicker, so we skip it.
+  if (mobile) {
+    return (
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[linear-gradient(150deg,#fff5f8,#ffe9f1,#f3ecff,#fff1e8)]"
+      >
+        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-rose/20 blur-[60px]" />
+        <div className="absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-lavender-deep/20 blur-[60px]" />
+      </div>
+    );
+  }
 
   return (
     <div

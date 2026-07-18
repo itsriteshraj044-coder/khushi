@@ -149,6 +149,25 @@
   }
 }
 
+/*
+ * Mobile performance: backdrop-filter blur re-rasterizes every frame as content
+ * scrolls behind glass surfaces — the biggest cause of scroll lag/flicker on
+ * phones. Drop the blur on small screens and use a solid-ish fill instead.
+ * (Unlayered so it wins over the @layer components rules above.)
+ */
+@media (max-width: 768px) {
+  .glass {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-deep {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 @layer components {
   /* Glassmorphism surface */
   .glass {

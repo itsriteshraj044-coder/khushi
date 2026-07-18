@@ -12,6 +12,9 @@ export function useLenis(): void {
 
   useEffect(() => {
     if (reduced) return;
+    // Smooth-scroll fights the browser's native momentum scroll on phones and
+    // causes visible jank/flicker — let touch devices scroll natively.
+    if (window.matchMedia("(pointer: coarse), (max-width: 768px)").matches) return;
 
     const lenis = new Lenis({
       duration: 1.15,
