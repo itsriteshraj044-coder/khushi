@@ -5,6 +5,7 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { DotNav } from "@/components/DotNav";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { Loader } from "@/sections/Loader";
+import { LockScreen } from "@/sections/LockScreen";
 import { LetterGate } from "@/sections/LetterGate";
 import { Hero } from "@/sections/Hero";
 import { useLenis } from "@/hooks/useLenis";
@@ -24,8 +25,8 @@ const LoveForm = lazy(() => import("@/sections/LoveForm").then((m) => ({ default
 const Footer = lazy(() => import("@/sections/Footer").then((m) => ({ default: m.Footer })));
 
 function App() {
-  // Entry flow: splash loader → love-letter gate → the site itself.
-  const [stage, setStage] = useState<"loading" | "letter" | "site">("loading");
+  // Entry flow: splash loader → private lock → love-letter gate → the site.
+  const [stage, setStage] = useState<"loading" | "lock" | "letter" | "site">("loading");
   useLenis();
   useContentProtection();
   const masked = useScreenshotGuard();
@@ -41,13 +42,18 @@ function App() {
           style={{ pointerEvents: "none" }}
         />
       )}
-      {/* The love-letter gate is mounted *behind* the splash while loading, so the
-          heart-iris reveal opens straight onto the sealed letter — the website is
-          never flashed in between. It stays until the visitor clicks "Explore". */}
-      {stage !== "site" && <LetterGate onEnter={() => setStage("site")} />}
+      {/* Private lock gate — mounted behind the splash while loading so the
+          heart-iris reveal opens straight onto it. Unlocking reveals the letter. */}
+      {(stage === "loading" || stage === "lock") && (
+        <LockScreen onUnlock={() => setStage("letter")} />
+      )}
 
-      {/* Splash screen sits on top; it hands off to the letter gate underneath. */}
-      {stage === "loading" && <Loader onComplete={() => setStage("letter")} />}
+      {/* The love-letter gate appears once unlocked; its CTA opens the site
+          (and starts our first song — dispatched from within the click). */}
+      {stage === "letter" && <LetterGate onEnter={() => setStage("site")} />}
+
+      {/* Splash screen sits on top; it hands off to the lock gate underneath. */}
+      {stage === "loading" && <Loader onComplete={() => setStage("lock")} />}
 
       {/* Global ambience */}
       <AnimatedBackground />

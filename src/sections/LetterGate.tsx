@@ -79,6 +79,9 @@ export function LetterGate({ onEnter }: LetterGateProps) {
 
   const enter = () => {
     setExiting(true);
+    // Start our song here — inside the tap — so mobile browsers allow it to
+    // play unmuted. The MusicPlayer listens for this event.
+    window.dispatchEvent(new Event("play-our-song"));
     // Let the fade-out play before handing off to the website.
     window.setTimeout(onEnter, reduced ? 0 : 700);
   };

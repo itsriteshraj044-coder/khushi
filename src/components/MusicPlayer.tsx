@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Music, X, Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import { Music, X, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 
 /**
  * Our songs. Played *audio-only* through YouTube's official IFrame player (the
@@ -58,12 +58,15 @@ export function MusicPlayer() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState({ current: 0, duration: 0 });
 
   const playerRef = useRef<any>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef<number | null>(null);
   const nextRef = useRef<() => void>(() => {});
+  const playFirstRef = useRef<() => void>(() => {});
+  const pendingFirstRef = useRef(false);
   const [apiReady, setApiReady] = useState(false);
 
   useEffect(() => {
@@ -97,6 +100,12 @@ export function MusicPlayer() {
       width: "0",
       playerVars: { controls: 0, rel: 0, playsinline: 1 },
       events: {
+        onReady: () => {
+          if (pendingFirstRef.current) {
+            pendingFirstRef.current = false;
+            playFirstRef.current();
+          }
+        },
         onStateChange: (e: any) => {
           setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
           if (e.data === window.YT.PlayerState.ENDED) nextRef.current();
@@ -104,6 +113,17 @@ export function MusicPlayer() {
       },
     });
   }, [apiReady]);
+
+  // Auto-play the first song (unmuted) when the site opens — triggered by the
+  // "Explore" tap on the love letter. Queues until the player is ready.
+  useEffect(() => {
+    const handler = () => {
+      if (playerRef.current?.loadVideoById) playFirstRef.current();
+      else pendingFirstRef.current = true;
+    };
+    window.addEventListener("play-our-song", handler);
+    return () => window.removeEventListener("play-our-song", handler);
+  }, []);
 
   // Poll playback position while a song is loaded.
   useEffect(() => {
@@ -128,11 +148,31 @@ export function MusicPlayer() {
   const goPrev = () => playIndex((currentRef.current ?? 1) - 1);
   nextRef.current = goNext;
 
+  // Start our first song, unmuted (used by the "Explore" tap).
+  const playFirst = () => {
+    playerRef.current?.unMute?.();
+    setMuted(false);
+    playIndex(0);
+  };
+  playFirstRef.current = playFirst;
+
   const togglePlay = () => {
     const p = playerRef.current;
     if (!p) return;
     if (isPlaying) p.pauseVideo();
     else p.playVideo();
+  };
+
+  const toggleMute = () => {
+    const p = playerRef.current;
+    if (!p) return;
+    if (muted) {
+      p.unMute();
+      setMuted(false);
+    } else {
+      p.mute();
+      setMuted(true);
+    }
   };
 
   const seek = (t: number) => {
@@ -149,27 +189,40 @@ export function MusicPlayer() {
         <div ref={hostRef} />
       </div>
 
-      {/* Floating launcher */}
-      <motion.button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label="Open our songs"
+      {/* Floating launcher + separate mute toggle */}
+      <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 1, duration: 0.6 }}
-        whileHover={{ y: -2 }}
-        className="fixed bottom-5 left-5 z-50 flex items-center gap-3 rounded-full glass px-3 py-2 pr-4 shadow-lg"
+        className="fixed bottom-5 left-5 z-50 flex items-center gap-1.5 rounded-full glass py-1.5 pl-1.5 pr-2 shadow-lg"
       >
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow-md">
-          <Music size={18} />
-        </span>
-        <span className="flex flex-col items-start">
-          <span className="flex items-center gap-1 text-xs font-medium text-plum">
-            <Music size={11} /> Our Song
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label="Open our songs"
+          className="flex items-center gap-2.5 rounded-full pr-1 transition-transform hover:-translate-y-0.5"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(120deg,#f7a8b8,#c9b6f0)] text-white shadow-md">
+            <Music size={16} />
           </span>
-          <Equalizer active={isPlaying} />
-        </span>
-      </motion.button>
+          <span className="flex flex-col items-start">
+            <span className="flex items-center gap-1 text-xs font-medium text-plum">
+              <Music size={11} /> Our Song
+            </span>
+            <Equalizer active={isPlaying} />
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={muted ? "Unmute" : "Mute"}
+          aria-pressed={muted}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/60 text-plum transition hover:text-rose active:scale-90"
+        >
+          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+      </motion.div>
 
       {/* Popup playlist */}
       <AnimatePresence>
