@@ -46,14 +46,6 @@ export interface Reason {
   gradient: string;
 }
 
-/** A gallery item backed by a real photo + masonry span. */
-export interface GalleryItem {
-  id: string;
-  caption: string;
-  span: "tall" | "short" | "wide";
-  src: string;
-}
-
 /** Love form data model. */
 export interface LoveFormData {
   yourName: string;

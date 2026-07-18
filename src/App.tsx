@@ -5,12 +5,12 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { DotNav } from "@/components/DotNav";
 import { MusicPlayer } from "@/components/MusicPlayer";
 import { Loader } from "@/sections/Loader";
+import { LetterGate } from "@/sections/LetterGate";
 import { Hero } from "@/sections/Hero";
 import { useLenis } from "@/hooks/useLenis";
 
 // Below-the-fold sections are code-split for a fast first paint.
 const LoveStory = lazy(() => import("@/sections/LoveStory").then((m) => ({ default: m.LoveStory })));
-const Gallery = lazy(() => import("@/sections/Gallery").then((m) => ({ default: m.Gallery })));
 const Quotes = lazy(() => import("@/sections/Quotes").then((m) => ({ default: m.Quotes })));
 const Shayari = lazy(() => import("@/sections/Shayari").then((m) => ({ default: m.Shayari })));
 const Memories = lazy(() => import("@/sections/Memories").then((m) => ({ default: m.Memories })));
@@ -22,14 +22,19 @@ const LoveForm = lazy(() => import("@/sections/LoveForm").then((m) => ({ default
 const Footer = lazy(() => import("@/sections/Footer").then((m) => ({ default: m.Footer })));
 
 function App() {
-  const [loaded, setLoaded] = useState(false);
+  // Entry flow: splash loader → love-letter gate → the site itself.
+  const [stage, setStage] = useState<"loading" | "letter" | "site">("loading");
   useLenis();
 
   return (
     <>
-      {/* The splash screen flows straight into a heart-iris reveal, so the site
-          is only ever seen fully — never a faded flash in between. */}
-      {!loaded && <Loader onComplete={() => setLoaded(true)} />}
+      {/* The love-letter gate is mounted *behind* the splash while loading, so the
+          heart-iris reveal opens straight onto the sealed letter — the website is
+          never flashed in between. It stays until the visitor clicks "Explore". */}
+      {stage !== "site" && <LetterGate onEnter={() => setStage("site")} />}
+
+      {/* Splash screen sits on top; it hands off to the letter gate underneath. */}
+      {stage === "loading" && <Loader onComplete={() => setStage("letter")} />}
 
       {/* Global ambience */}
       <AnimatedBackground />
@@ -42,7 +47,6 @@ function App() {
         <Hero />
         <Suspense fallback={<div className="h-40" aria-hidden />}>
           <LoveStory />
-          <Gallery />
           <Quotes />
           <Shayari />
           <Memories />

@@ -10,7 +10,6 @@ export const COUPLE = {
 export const SECTIONS = [
   { id: "hero", label: "Home" },
   { id: "story", label: "Our Story" },
-  { id: "gallery", label: "Gallery" },
   { id: "quotes", label: "Quotes" },
   { id: "shayari", label: "Shayari" },
   { id: "memories", label: "Memories" },
