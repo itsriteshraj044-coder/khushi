@@ -165,6 +165,18 @@
     border: 2px solid var(--color-cream);
   }
 
+  /* Block printing / Save-as-PDF from capturing the content. */
+  @media print {
+    body * { visibility: hidden !important; }
+    body::before {
+      content: "";
+      visibility: visible;
+      position: fixed;
+      inset: 0;
+      background: #000;
+    }
+  }
+
   /* Reduced motion: disable animations for accessibility */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
