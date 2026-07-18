@@ -10,6 +10,7 @@ import { Hero } from "@/sections/Hero";
 import { useLenis } from "@/hooks/useLenis";
 
 // Below-the-fold sections are code-split for a fast first paint.
+const VideoShowcase = lazy(() => import("@/sections/VideoShowcase").then((m) => ({ default: m.VideoShowcase })));
 const LoveStory = lazy(() => import("@/sections/LoveStory").then((m) => ({ default: m.LoveStory })));
 const Quotes = lazy(() => import("@/sections/Quotes").then((m) => ({ default: m.Quotes })));
 const Shayari = lazy(() => import("@/sections/Shayari").then((m) => ({ default: m.Shayari })));
@@ -46,6 +47,7 @@ function App() {
       <main>
         <Hero />
         <Suspense fallback={<div className="h-40" aria-hidden />}>
+          <VideoShowcase />
           <LoveStory />
           <Quotes />
           <Shayari />
