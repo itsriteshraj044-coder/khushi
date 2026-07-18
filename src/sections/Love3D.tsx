@@ -25,10 +25,10 @@ export function Love3D() {
   return (
     <section id="love3d" className="section-pad relative px-5 sm:px-8 lg:px-12">
       <SectionHeading
-        eyebrow="A universe of us"
-        title="3D Love"
+        eyebrow="Lights, camera, love"
+        title="Love in Motion"
         highlight="Love"
-        subtitle="A little cinematic world, spun just for the two of us."
+        subtitle="A little film of us — press play and get lost in the moment."
       />
 
       <motion.div
