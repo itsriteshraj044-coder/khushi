@@ -26,7 +26,7 @@ export function Love3D() {
     <section id="love3d" className="section-pad relative px-5 sm:px-8 lg:px-12">
       <SectionHeading
         eyebrow="Lights, camera, love"
-        title="Love in Motion"
+        title="Cinematic Love"
         highlight="Love"
         subtitle="A little film of us — press play and get lost in the moment."
       />

@@ -13,7 +13,7 @@ export const SECTIONS = [
   { id: "quotes", label: "Memories" },
   { id: "shayari", label: "Shayari" },
   { id: "reasons", label: "Why You" },
-  { id: "love3d", label: "In Motion" },
+  { id: "love3d", label: "Cinematic" },
   { id: "letter", label: "Letter" },
   { id: "countdown", label: "Forever" },
   { id: "form", label: "Message" },
