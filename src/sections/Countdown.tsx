@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Infinity as InfinityIcon } from "lucide-react";
+import { Heart } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
 import { GlassCard } from "@/components/GlassCard";
-import { useCountdown } from "@/hooks/useCountdown";
-import { ANNIVERSARY, COUPLE } from "@/utils/constants";
+import { useElapsedSince } from "@/hooks/useCountdown";
+import { RELATIONSHIP_START, COUPLE } from "@/utils/constants";
 
-/** A single animated countdown unit whose number rolls when it changes. */
+/** A single animated time unit whose number rolls when it changes. */
 function Unit({ value, label }: { value: number; label: string }) {
   const display = String(value).padStart(2, "0");
   return (
@@ -24,7 +24,7 @@ function Unit({ value, label }: { value: number; label: string }) {
           </motion.span>
         </AnimatePresence>
       </div>
-      <span className="mt-3 text-xs uppercase tracking-[0.25em] text-ink-soft sm:text-sm">
+      <span className="mt-3 text-xs uppercase tracking-[0.2em] text-ink-soft sm:text-sm">
         {label}
       </span>
     </div>
@@ -32,38 +32,35 @@ function Unit({ value, label }: { value: number; label: string }) {
 }
 
 /**
- * Section 11 — Countdown. A glass card counting down to the next anniversary,
- * with numbers that roll as each second ticks.
+ * Section 11 — Our journey so far. A glass card counting *up* from the day it
+ * all began (13 Oct 2019), with numbers that roll as each second ticks.
  */
 export function Countdown() {
-  const { days, hours, minutes, seconds } = useCountdown(
-    ANNIVERSARY.month,
-    ANNIVERSARY.day,
-  );
+  const { years, months, days, hours, minutes, seconds } =
+    useElapsedSince(RELATIONSHIP_START);
 
   return (
     <section id="countdown" className="section-pad relative px-5 sm:px-8 lg:px-12">
       <SectionHeading
-        eyebrow="Every second counts"
-        title="Countdown to Forever"
-        highlight="Forever"
-        subtitle={`Counting down the moments until ${COUPLE.combined} celebrate us, all over again.`}
+        eyebrow="Since 13 October 2019"
+        title="Us, So Far"
+        highlight="So Far"
+        subtitle={`Every second of ${COUPLE.combined} since the day it all began — and still counting.`}
       />
 
       <div className="mx-auto mt-14 max-w-none">
         <GlassCard gradientBorder className="flex flex-col items-center py-10">
-          <div className="flex items-center gap-3 sm:gap-5">
+          <div className="flex flex-wrap items-start justify-center gap-3 sm:gap-4">
+            <Unit value={years} label="Years" />
+            <Unit value={months} label="Months" />
             <Unit value={days} label="Days" />
-            <span className="pb-8 text-3xl text-rose/50 sm:text-5xl">:</span>
             <Unit value={hours} label="Hours" />
-            <span className="pb-8 text-3xl text-rose/50 sm:text-5xl">:</span>
             <Unit value={minutes} label="Minutes" />
-            <span className="pb-8 text-3xl text-rose/50 sm:text-5xl">:</span>
             <Unit value={seconds} label="Seconds" />
           </div>
           <p className="mt-8 inline-flex items-center gap-2 font-cormorant text-lg text-ink-soft">
-            <InfinityIcon size={18} className="text-rose-gold-deep" />
-            and then a whole lifetime more
+            <Heart size={16} className="text-rose" fill="currentColor" />
+            and forever more to go
           </p>
         </GlassCard>
       </div>

@@ -47,3 +47,50 @@ export function useCountdown(month: number, day: number): TimeLeft {
 
   return left;
 }
+
+export interface Elapsed {
+  years: number;
+  months: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+/** Calendar-accurate time elapsed between `start` and now. */
+function computeElapsed(start: Date): Elapsed {
+  const now = new Date();
+  let years = now.getFullYear() - start.getFullYear();
+  let months = now.getMonth() - start.getMonth();
+  let days = now.getDate() - start.getDate();
+  let hours = now.getHours() - start.getHours();
+  let minutes = now.getMinutes() - start.getMinutes();
+  let seconds = now.getSeconds() - start.getSeconds();
+
+  if (seconds < 0) { seconds += 60; minutes -= 1; }
+  if (minutes < 0) { minutes += 60; hours -= 1; }
+  if (hours < 0) { hours += 24; days -= 1; }
+  if (days < 0) {
+    // Borrow the number of days in the previous month.
+    const daysInPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    days += daysInPrevMonth;
+    months -= 1;
+  }
+  if (months < 0) { months += 12; years -= 1; }
+
+  return { years, months, days, hours, minutes, seconds };
+}
+
+/** Live "time since" a fixed start date, recomputed every second. */
+export function useElapsedSince(start: Date): Elapsed {
+  const [elapsed, setElapsed] = useState<Elapsed>(() => computeElapsed(start));
+
+  useEffect(() => {
+    const tick = () => setElapsed(computeElapsed(start));
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
+  }, [start]);
+
+  return elapsed;
+}
