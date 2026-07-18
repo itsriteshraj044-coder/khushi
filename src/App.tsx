@@ -47,8 +47,8 @@ function App() {
       <main>
         <Hero />
         <Suspense fallback={<div className="h-40" aria-hidden />}>
-          <VideoShowcase />
           <LoveStory />
+          <VideoShowcase />
           <Quotes />
           <Shayari />
           <Memories />
