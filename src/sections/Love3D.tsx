@@ -47,6 +47,9 @@ export function Love3D() {
           loop
           playsInline
           preload="metadata"
+          controlsList="nodownload noremoteplayback"
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
         />
 
         {/* Circular music button over the bottom-right watermark (also mute/unmute).

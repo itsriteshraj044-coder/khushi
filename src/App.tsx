@@ -8,6 +8,7 @@ import { Loader } from "@/sections/Loader";
 import { LetterGate } from "@/sections/LetterGate";
 import { Hero } from "@/sections/Hero";
 import { useLenis } from "@/hooks/useLenis";
+import { useContentProtection } from "@/hooks/useContentProtection";
 
 // Below-the-fold sections are code-split for a fast first paint.
 const VideoShowcase = lazy(() => import("@/sections/VideoShowcase").then((m) => ({ default: m.VideoShowcase })));
@@ -25,6 +26,7 @@ function App() {
   // Entry flow: splash loader → love-letter gate → the site itself.
   const [stage, setStage] = useState<"loading" | "letter" | "site">("loading");
   useLenis();
+  useContentProtection();
 
   return (
     <>
