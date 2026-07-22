@@ -13,7 +13,7 @@ import { COUPLE } from "@/utils/constants";
  *  Existing content (names, title, tagline, CTAs) is preserved.
  * ============================================================ */
 
-const PHOTO = "/image/hero.jpg";
+const PHOTO = "/image/Snapchat-317317445.jpg";
 
 /* ---------------- Decorative pieces ---------------- */
 

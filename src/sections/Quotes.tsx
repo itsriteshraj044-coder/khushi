@@ -16,37 +16,31 @@ const AUTOPLAY_MS = 4500;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Every photo in /public/image (love-01..15 + the WhatsApp set copied to wa-*). */
-const PHOTOS = [
-  ...Array.from({ length: 15 }, (_, i) => `/image/love-${pad(i + 1)}.jpg`),
-  ...Array.from({ length: 15 }, (_, i) => `/image/wa-${pad(i + 1)}.jpg`),
-];
-
-/** A rotating pool of captions assigned to the photos. */
-const CAPTIONS = [
-  "Golden Hour",
-  "Hand in Hand",
-  "That Laugh",
-  "Slow Dance",
-  "Morning Light",
-  "Just Us",
-  "The Getaway",
-  "Forehead Kiss",
-  "City Lights",
-  "Quiet Sunday",
-  "Our Little World",
-  "Sunset Hues",
-  "Forever You",
-  "Stolen Moment",
-  "My Favourite View",
-];
-
-/** Our memories — real couple photos, shown one at a time in the spotlight box. */
-const MEMORIES = PHOTOS.map((src, i) => ({
-  id: `mem-${i + 1}`,
-  src,
-  caption: CAPTIONS[i % CAPTIONS.length],
-}));
+/** Our memories — real photos in /public/image, each with its own caption. */
+const MEMORIES = [
+  { src: "/image/1722507919399.jpg", caption: "Pretty in Pink" },
+  { src: "/image/1722507919403.jpg", caption: "Cosy Corner" },
+  { src: "/image/1722507919507.jpg", caption: "Green & Graceful" },
+  { src: "/image/1722507919547.jpg", caption: "Café Daydream" },
+  { src: "/image/1722507919992.jpg", caption: "Sunshine in Yellow" },
+  { src: "/image/1724063069532.jpg", caption: "Elegant in Blue" },
+  { src: "/image/1724063070005.jpg", caption: "Rosy Glow" },
+  { src: "/image/1724063070066.jpg", caption: "Dreamy Blush" },
+  { src: "/image/1725908635328.jpg", caption: "Festive Grace" },
+  { src: "/image/1734420994722.jpg", caption: "Cutie in Blue" },
+  { src: "/image/1734421340024.jpg", caption: "Floral Elegance" },
+  { src: "/image/1734421340282.jpg", caption: "Sweet Shop Stroll" },
+  { src: "/image/1734421340327.jpg", caption: "Magenta Charm" },
+  { src: "/image/1739547172742.jpg", caption: "Teal Serenity" },
+  { src: "/image/1739547172743.jpg", caption: "Up Close" },
+  { src: "/image/1739547172760.jpeg", caption: "Royal Blue" },
+  { src: "/image/1739547172761.jpeg", caption: "Blue Saree Beauty" },
+  { src: "/image/1739547172768.jpeg", caption: "Draped in Blue" },
+  { src: "/image/1739547172773.jpeg", caption: "Bold & Beautiful" },
+  { src: "/image/Snapchat-317317445.jpg", caption: "Dinner Date Glow" },
+  { src: "/image/Snapchat-849491874.jpg", caption: "Chin on Hands" },
+  { src: "/image/Snapchat-854556369.jpg", caption: "That Sweet Smile" },
+].map((m, i) => ({ id: `mem-${i + 1}`, ...m }));
 
 /**
  * Section 4 — Our Memories. The same cinematic "spotlight" box as before, but
