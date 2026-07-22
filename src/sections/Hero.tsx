@@ -129,10 +129,10 @@ function PhotoBlob({ className }: { className?: string }) {
             placed to frame her face and shoulders with little zoom. */}
         <image
           href={PHOTO}
-          x="-2"
-          y="-34"
-          width="104"
-          height="185"
+          x="3"
+          y="-12"
+          width="94"
+          height="167"
           preserveAspectRatio="xMidYMid slice"
           clipPath={`url(#${id})`}
         />
