@@ -1,50 +1,50 @@
 import { Sparkles, Smile, Coffee, Gem, Camera, Infinity } from "lucide-react";
 import type { StoryMilestone } from "@/types";
 
-/** The six chapters of our love story timeline. Original wording. */
+/** The six chapters of our love story timeline. */
 export const STORY: StoryMilestone[] = [
   {
     id: "meet",
-    title: "Our First Meet ❤️",
-    date: "Where it all began — on Ludo",
+    title: "The First Hello ❤️",
+    date: "Where two worlds quietly met",
     description:
-      "We met on Ludo, and I still can't believe a simple game brought someone as kind and caring as you into my life. You supported me, stood by me, made me smile, and became one of the most special people in my life. I'm truly grateful we met. ❤️",
+      "Some stories begin with fireworks; ours began with a simple hello. In a moment so ordinary I almost missed it, the universe was quietly rewriting my whole life. I didn't know it yet, but that little hello was the first line of my favourite story — the one where I finally found you. ❤️",
     icon: Sparkles,
     accent: "#f7a8b8",
   },
   {
     id: "smile",
-    title: "The First Smile 😊",
-    date: "The moment everything felt brighter",
+    title: "Falling, Slowly 😊",
+    date: "The way you became my favourite thought",
     description:
-      "When I saw you smile for the first time, everything around me felt brighter. Your smile was so genuine, warm, and beautiful that I couldn't stop thinking about it. From that moment, I knew you were someone truly special to me. ❤️",
+      "It didn't happen all at once. I fell for you the way you fall asleep — slowly, and then all at once. Your laugh, your kindness, the way you made even the dull days feel golden. Little by little you became my first thought in the morning and my last one at night, and I never wanted it any other way. ❤️",
     icon: Smile,
     accent: "#e8b298",
   },
   {
     id: "date",
     title: "Our First Date ❤️",
-    date: "Finally, face to face",
+    date: "The day the screen finally faded",
     description:
-      "This day will always be special because we finally met after waiting for so long. Seeing you in person made all the excitement and anticipation worth it. I'll always cherish every moment we spent together — the conversations, the smiles, and even that cake we thought wouldn't be good, but it turned out to be amazing. It wasn't just the cake; it was the happiness of being with you that made everything perfect. I'll never forget this beautiful day. ❤️",
+      "After all the waiting, all the late-night talks and endless calls, we were finally in the same place at the same time. The whole world went soft and quiet around us. Every laugh, every shy glance, every little pause felt like it belonged only to us. It wasn't about where we were — it was the simple, dizzying joy of finally being together. ❤️",
     icon: Coffee,
     accent: "#c9b6f0",
   },
   {
     id: "proposal",
-    title: "The Proposal ❤️",
-    date: "The day you said 'I love you'",
+    title: "The First 'I Love You' ❤️",
+    date: "Three words, one forever",
     description:
-      "I'll always remember how I made up a cute little story just to propose to you. I was nervous but also so excited because I wanted that moment to be special. And the best part was hearing you say 'I love you.' That one moment made me the happiest person in the world. It wasn't just a proposal — it was the beginning of our beautiful love story, a memory I'll cherish forever. ❤️",
+      "My heart was racing and my hands were shaking, but I knew exactly what I wanted to say. And when those three little words finally left my lips — and you said them back — the whole world stood still. It wasn't just a confession; it was the beginning of us, a promise I've cherished every single day since. ❤️",
     icon: Gem,
     accent: "#d99a86",
   },
   {
     id: "memories",
-    title: "A Thousand Memories ❤️",
-    date: "From 2019 to 2026",
+    title: "A Thousand Little Moments ❤️",
+    date: "Every day, a new page",
     description:
-      "From 2019 to 2026, we've created countless memories together. Whether we were together or apart, every moment has a special place in my heart. Our conversations, endless calls, silly jokes, little fights, misunderstandings, making up again, and all the laughter — we've been through so much. Every phase of our journey has taught us something and made our bond even stronger. Looking back, I realize that every memory, whether happy or difficult, has become a beautiful part of our story. And I hope we continue making many more memories together for a lifetime. ❤️",
+      "Somewhere between the endless calls, the silly jokes, the little fights and the sweeter making-ups, we built a whole world together. Every laugh, every tear, every ordinary Tuesday turned into a memory I'd never trade. Through every high and every low, we only grew closer — and I hope we keep collecting these little moments for a lifetime. ❤️",
     icon: Camera,
     accent: "#ffb6ce",
   },
