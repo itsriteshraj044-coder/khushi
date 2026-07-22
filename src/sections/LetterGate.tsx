@@ -10,7 +10,7 @@ interface LetterGateProps {
   onEnter: () => void;
 }
 
-const LETTER = `My dearest ${COUPLE.two},
+const LETTER = `My dearest ${COUPLE.name},
 
 Before you step into our little world, pause here with me for a moment.
 
@@ -19,7 +19,7 @@ Every picture, every word, every memory ahead was gathered with one heart in min
 So take my hand, and let me walk you through our story.
 
 Forever yours,
-${COUPLE.one} ♡`;
+♡`;
 
 const PETAL_COLORS = ["#ffb6ce", "#e2d6f9", "#ffdfc4", "#f7a8b8", "#fff7f0"];
 
@@ -131,8 +131,9 @@ export function LetterGate({ onEnter }: LetterGateProps) {
               >
                 <Sparkles size={14} className="text-rose" /> A letter for you
               </motion.p>
-              <h1 className="mb-10 font-names text-5xl leading-[1.2] text-gradient sm:text-6xl">
-                {COUPLE.combined}
+              <h1 className="mb-10 flex items-center justify-center gap-3 font-names text-5xl leading-[1.2] text-gradient sm:text-6xl">
+                <Heart className="h-8 w-8 shrink-0 animate-pulse-heart text-rose sm:h-10 sm:w-10" fill="currentColor" />
+                {COUPLE.name}
               </h1>
 
               <motion.button

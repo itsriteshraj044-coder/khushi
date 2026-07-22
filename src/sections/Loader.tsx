@@ -191,12 +191,11 @@ export function Loader({ onComplete }: LoaderProps) {
           transition={{ delay: 0.9, duration: 0.8 }}
           className="mb-4 flex flex-wrap items-center justify-center gap-x-2.5 py-1 font-names text-4xl leading-[1.3] sm:gap-x-4 sm:text-5xl"
         >
-          <span className="text-gradient">{COUPLE.one}</span>
           <Heart
             className="h-6 w-6 shrink-0 animate-pulse-heart text-rose sm:h-8 sm:w-8"
             fill="currentColor"
           />
-          <span className="text-gradient">{COUPLE.two}</span>
+          <span className="text-gradient">{COUPLE.name}</span>
         </motion.p>
 
         {/* Typing tagline */}

@@ -9,8 +9,8 @@ interface LockScreenProps {
 
 // A soft gate for the two of us. Client-side only — a playful lock, not real
 // security (the answer lives in the page), but it keeps our world just ours.
-const LOCK_ID = "abhishek@neha";
-const LOCK_PASS = "abhishek@neha";
+const LOCK_ID = "khushi";
+const LOCK_PASS = "khushi";
 
 /** The private gate shown after the splash and before the love letter. */
 export function LockScreen({ onUnlock }: LockScreenProps) {
@@ -49,8 +49,9 @@ export function LockScreen({ onUnlock }: LockScreenProps) {
         <p className="mt-4 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.35em] text-wine/70">
           <Heart size={12} className="text-rose" fill="currentColor" /> Private
         </p>
-        <h1 className="mt-2 font-names text-4xl leading-tight text-gradient">
-          {COUPLE.combined}
+        <h1 className="mt-2 flex items-center justify-center gap-2 font-names text-4xl leading-tight text-gradient">
+          <Heart size={22} className="shrink-0 animate-pulse-heart text-rose" fill="currentColor" />
+          {COUPLE.name}
         </h1>
         <p className="mt-2 font-cormorant text-lg text-ink-soft">
           Enter our secret to step inside.

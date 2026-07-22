@@ -5,14 +5,14 @@ import { SectionHeading } from "@/components/SectionHeading";
 import { useTypingEffect } from "@/hooks/useTypingEffect";
 import { COUPLE } from "@/utils/constants";
 
-const LETTER = `My dearest ${COUPLE.two},
+const LETTER = `My dearest ${COUPLE.name},
 
 If I had a single wish, I would spend it on more time with you — more slow mornings, more shared silences, more of your laughter filling the quiet corners of my days.
 
 You are my calm and my adventure, my home and my horizon. Thank you for choosing me, again and again.
 
 Yours, completely and always,
-${COUPLE.one} ♡`;
+♡`;
 
 /** The handwritten letter with a typing reveal, shown after the seal breaks. */
 function LetterBody() {

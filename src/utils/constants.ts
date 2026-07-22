@@ -1,9 +1,7 @@
-/** The couple this site celebrates. Referenced across sections. */
+/** The person this site celebrates. Referenced across sections. */
 export const COUPLE = {
-  one: "Abhishek",
-  two: "Neha",
-  /** "Abhishek & Neha" */
-  combined: "Abhishek & Neha",
+  /** Display name shown across the site. */
+  name: "Khushi",
 } as const;
 
 /** Section ids used for anchor navigation + scroll spy. */

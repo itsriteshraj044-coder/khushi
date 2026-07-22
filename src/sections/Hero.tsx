@@ -176,9 +176,8 @@ function Names({ className }: { className?: string }) {
       transition={{ delay: 0.5, duration: 0.8 }}
       className={`flex flex-wrap items-center gap-x-3 font-names text-white/95 ${className ?? ""}`}
     >
-      <span>{COUPLE.one}</span>
       <Heart className="h-[0.7em] w-[0.7em] animate-pulse-heart text-[#ffd0da]" fill="currentColor" />
-      <span>{COUPLE.two}</span>
+      <span>{COUPLE.name}</span>
     </motion.p>
   );
 }

@@ -36,11 +36,10 @@ export function Footer() {
         <p className="mt-8 flex items-center justify-center gap-1.5 text-sm text-ink-soft">
           Made with
           <Heart size={14} fill="#f7a8b8" className="animate-pulse-heart text-rose" />
-          by <span className="font-dancing text-lg text-gradient">{COUPLE.one}</span>
-          for <span className="font-dancing text-lg text-gradient">{COUPLE.two}</span>
+          for <span className="font-dancing text-lg text-gradient">{COUPLE.name}</span>
         </p>
         <p className="mt-1 text-xs text-ink-soft/70">
-          © {new Date().getFullYear()} · {COUPLE.combined} · Forever &amp; Always
+          © {new Date().getFullYear()} · {COUPLE.name} · Forever &amp; Always
         </p>
       </div>
     </footer>

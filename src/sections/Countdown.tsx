@@ -45,7 +45,7 @@ export function Countdown() {
         eyebrow="Since 13 October 2019"
         title="Us, So Far"
         highlight="So Far"
-        subtitle={`Every second of ${COUPLE.combined} since the day it all began — and still counting.`}
+        subtitle={`Every second with ${COUPLE.name} since the day it all began — and still counting.`}
       />
 
       <div className="mx-auto mt-14 max-w-none">
