@@ -8,8 +8,8 @@ import { Music, X, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "
  * friendly — we deliberately do NOT rip the audio to MP3.
  */
 const SONGS = [
-  { id: "petoy_uTMRU", title: "Rahega Hothon Pe", artist: "Kunaal Vermaa" },
   { id: "ETv-U0ytbDA", title: "Yun Hi Re", artist: "Anirudh · David" },
+  { id: "petoy_uTMRU", title: "Rahega Hothon Pe", artist: "Kunaal Vermaa" },
 ];
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
