@@ -33,7 +33,7 @@ function Unit({ value, label }: { value: number; label: string }) {
 
 /**
  * Section 11 — Our journey so far. A glass card counting *up* from the day it
- * all began (13 Oct 2019), with numbers that roll as each second ticks.
+ * all began (10 Jun 2023), with numbers that roll as each second ticks.
  */
 export function Countdown() {
   const { years, months, days, hours, minutes, seconds } =
@@ -42,7 +42,7 @@ export function Countdown() {
   return (
     <section id="countdown" className="section-pad relative px-5 sm:px-8 lg:px-12">
       <SectionHeading
-        eyebrow="Since 13 October 2019"
+        eyebrow="Since 10 June 2023"
         title="Us, So Far"
         highlight="So Far"
         subtitle={`Every second with ${COUPLE.name} since the day it all began — and still counting.`}
