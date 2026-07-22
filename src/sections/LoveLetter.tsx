@@ -12,7 +12,7 @@ If I had a single wish, I would spend it on more time with you — more slow mor
 You are my calm and my adventure, my home and my horizon. Thank you for choosing me, again and again.
 
 Yours, completely and always,
-♡`;
+Rit ♡`;
 
 /** The handwritten letter with a typing reveal, shown after the seal breaks. */
 function LetterBody() {

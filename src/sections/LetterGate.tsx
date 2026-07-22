@@ -19,7 +19,7 @@ Every picture, every word, every memory ahead was gathered with one heart in min
 So take my hand, and let me walk you through our story.
 
 Forever yours,
-♡`;
+Rit ♡`;
 
 const PETAL_COLORS = ["#ffb6ce", "#e2d6f9", "#ffdfc4", "#f7a8b8", "#fff7f0"];
 
