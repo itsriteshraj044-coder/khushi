@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Volume2, VolumeX } from "lucide-react";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -19,8 +19,29 @@ export function Love3D() {
     if (!v) return;
     v.muted = !v.muted;
     setMuted(v.muted);
+    // Coordinate with the background song: video sound ON → mute our song;
+    // video sound OFF → bring our song back.
+    window.dispatchEvent(new Event(v.muted ? "unmute-our-song" : "mute-our-song"));
     void v.play().catch(() => {});
   };
+
+  // When the video scrolls out of view, mute its audio and let our song play.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting && !v.muted) {
+          v.muted = true;
+          setMuted(true);
+          window.dispatchEvent(new Event("unmute-our-song"));
+        }
+      },
+      { threshold: 0.3 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <section id="love3d" className="section-pad relative px-5 sm:px-8 lg:px-12">
