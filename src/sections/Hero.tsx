@@ -124,14 +124,15 @@ function PhotoBlob({ className }: { className?: string }) {
         </defs>
         {/* White heart frame */}
         <path d={HEART_FRAME} fill="white" />
-        {/* Photo (960:1280) framed on her face — band placed so the decor above is
-            just a thin strip, her face sits high, and the table/spoons stay out. */}
+        {/* Photo (720:1280 portrait). The box keeps the image's own aspect ratio
+            so there's no extra crop — the full width shows and the vertical band is
+            placed to frame her face and shoulders with little zoom. */}
         <image
           href={PHOTO}
-          x="-43"
-          y="-62"
-          width="185"
-          height="247"
+          x="-2"
+          y="-34"
+          width="104"
+          height="185"
           preserveAspectRatio="xMidYMid slice"
           clipPath={`url(#${id})`}
         />
