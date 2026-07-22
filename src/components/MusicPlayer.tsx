@@ -147,6 +147,35 @@ export function MusicPlayer() {
     return () => window.removeEventListener("prime-our-song", handler);
   }, []);
 
+  // External control from the video: when the clip's audio is turned on, our
+  // song mutes; when the clip is muted (or scrolled away), our song comes back.
+  useEffect(() => {
+    const muteHandler = () => {
+      const p = playerRef.current;
+      if (!p?.mute) return;
+      p.mute();
+      setMuted(true);
+    };
+    const unmuteHandler = () => {
+      const p = playerRef.current;
+      if (!p) return;
+      // If the song was never started yet, start it from the top.
+      if (currentRef.current === null && p.loadVideoById) {
+        playFirstRef.current();
+        return;
+      }
+      p.unMute?.();
+      setMuted(false);
+      p.playVideo?.();
+    };
+    window.addEventListener("mute-our-song", muteHandler);
+    window.addEventListener("unmute-our-song", unmuteHandler);
+    return () => {
+      window.removeEventListener("mute-our-song", muteHandler);
+      window.removeEventListener("unmute-our-song", unmuteHandler);
+    };
+  }, []);
+
   // Poll playback position while a song is loaded.
   useEffect(() => {
     if (current === null) return;
